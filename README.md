@@ -30,8 +30,9 @@ new Vue({
     :category_id='29' 
     state='WA' 
     suburb='PERTH' 
+    :nearby='50'
     :itemsperpage='6' 
-    headertext="Business Directory - Air Con"
+    headertext='Business Directory - Air Con'
   />
 </template>
 
@@ -98,7 +99,7 @@ and run command
 yarn examples:ht2businessdirectory
 
 # or
-
+npm install
 npm run examples:ht2businessdirectory
 ```
 
