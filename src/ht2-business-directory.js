@@ -2,7 +2,7 @@ import { devMode, registerVuexStore } from './utils'
 import axios from 'axios'
 
 const instanceBusinessDirectory = axios.create({
-  baseURL: 'http://127.0.0.1:8989/api/'
+  baseURL: 'https://ht2-api.hiretrades.com.au/api/'
 })
 
 import HiretradesBusinessDirectoryComponent from './ht2-business-directory-component.vue';

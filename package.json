@@ -1,6 +1,6 @@
 {
   "name": "ht2-business-directory",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "HT BUSINESS DIRECTORY",
   "main": "dist/ht2-business-directory.js",
   "types": "src/types/index.d.ts",
@@ -79,5 +79,8 @@
     "bootstrap-vue": "^2.11.0",
     "vue-element-loading": "^1.1.5",
     "vue-router": "^3.1.6"
+  },
+  "directories": {
+    "example": "examples"
   }
 }
