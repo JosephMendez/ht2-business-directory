@@ -1,6 +1,6 @@
 {
   "name": "ht2-business-directory",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "HT2 BUSINESS DIRECTORY",
   "main": "dist/ht2-business-directory.js",
   "types": "src/types/index.d.ts",
@@ -66,8 +66,8 @@
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
     "vuex": "^3.1.1",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   },
   "peerDependencies": {
     "vue": "^2.6.11"

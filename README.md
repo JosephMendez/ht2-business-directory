@@ -21,7 +21,23 @@ new Vue({
 })
 ```
 
-### 3. Props
+### 3. Use in your components
+
+```vue
+
+<template>
+  <ht2-business-directory 
+    :category_id='29' 
+    state='WA' 
+    suburb='PERTH' 
+    :itemsperpage='6' 
+    headertext="Business Directory - Air Con"
+  />
+</template>
+
+```
+
+### 4. Props
 
 ```js
     headertext: { 
@@ -67,20 +83,23 @@ new Vue({
     }
 ```
 
-### 4. Use in your components
+## DEMO URL
 
-```vue
-<template>
-  <ht2-business-directory />
-</template>
+```
+http://ht2-dev.hiretrades.com.au/testbusinessdirectory/
+# or
 
-<script>
-  export default {
-    async created() {
-      console.log(this.$directory);
-    },
-  };
-</script>
+git clone https://github.com/JosephMendez/ht2-business-directory
+
+cd ht2-business-directory
+
+and run command
+
+yarn examples:ht2businessdirectory
+
+# or
+
+npm run examples:ht2businessdirectory
 ```
 
 ## License
