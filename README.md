@@ -21,7 +21,53 @@ new Vue({
 })
 ```
 
-### 3. Use in your components
+### 3. Props
+
+```js
+    headertext: { 
+      type: String
+    },
+    profileurl: {
+      type: String,
+      default: 'https://www.hiretrades.com.au/profile/'
+    },
+    category: {
+      type: Number,
+      default: 29
+    },
+    suburb: {
+      type: String
+    },
+    state: {
+      type: String
+    },
+    itemsperpage: {
+      type: Number,
+      default: 6
+    },
+    nearby: {
+      type: Number,
+      default: 50
+    },
+    showlocationdetails: {
+      type: Boolean,
+      default: false
+    },
+    shadowclass: {
+      type: Boolean,
+      defrault: false
+    },
+    showtypetext: {
+      type: Boolean,
+      default: true
+    },
+    showdistancetext: {
+      type: Boolean,
+      default: true
+    }
+```
+
+### 4. Use in your components
 
 ```vue
 <template>
