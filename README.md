@@ -58,6 +58,12 @@ new Vue({
     state: {
       type: String
     },
+    lat: {
+      type: Number
+    },
+    lon: {
+      type: Number
+    },
     itemsperpage: {
       type: Number,
       default: 6

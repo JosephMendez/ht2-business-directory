@@ -97,6 +97,12 @@ export default {
     state: {
       type: String
     },
+    lat: {
+      type: String
+    },
+    lon: {
+      type: String
+    },
     limit: {
       type: Number,
       default: 2000
@@ -172,6 +178,8 @@ export default {
           'nearby': this.nearby,
           'state': this.state,
           'type': 'r',
+          'lat': this.lat,
+          'lon': this.lon,
           'url': '/business/directory/2'
         }
         this.lists = []
@@ -197,6 +205,8 @@ export default {
         'limit': this.initialtotal,
         'nearby': this.nearby,
         'state': this.state,
+        'lat': this.lat,
+        'lon': this.lon,
         'type': 'p',
         'url': '/business/directory/2'
       }
