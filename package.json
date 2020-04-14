@@ -1,6 +1,6 @@
 {
   "name": "ht2-business-directory",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "HT2 BUSINESS DIRECTORY",
   "main": "dist/ht2-business-directory.js",
   "types": "src/types/index.d.ts",

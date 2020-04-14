@@ -4,9 +4,9 @@
 
 ### 1. Install
 ```
-yarn add ht2-business-directory
+yarn add ht2-business-directory@1.0.3
 # or
-npm i ht2-business-directory --save
+npm i ht2-business-directory@1.0.3 --save
 ```
 
 ### 2. Plug-in

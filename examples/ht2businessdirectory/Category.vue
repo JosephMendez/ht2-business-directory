@@ -48,7 +48,7 @@ export default {
       headtext: 'Business Directory - Air Con',
       currentmenu: 1,
       currentmenusub: null,
-      nearbyvalue: 50,
+      nearbyvalue: 0,
       showtype: true,
       showdistance: true,
       selectedstate: '',
@@ -150,7 +150,7 @@ export default {
       this.show = true
       this.currentmenusub = cat
       this.currentmenu = null
-      this.nearbyvalue = 'statewide'
+      this.nearbyvalue = 0
       this.setcategory = cat
       this.selectedstate = state
       this.selectedsuburb = suburb
@@ -163,7 +163,7 @@ export default {
       this.show = true
       this.currentmenusub = null
       this.currentmenu = i
-      this.nearbyvalue = 50
+      this.nearbyvalue = 0
       this.selectedstate = null
       this.selectedsuburb = null
       this.setcategory = i

@@ -8,16 +8,12 @@
     </div>
     <div v-if="showdistancetext">
        <input type="checkbox" checked v-model="showdistancetextcheck"> Show distance from  your location<br>
-       <input type="radio" value="50"  v-model="distanceoptions">50km 
-       <input type="radio" value="100" v-model="distanceoptions">100km  
-       <input type="radio" value="statewide" v-model="distanceoptions">StateWide
-       <input type="radio" value="nationwide" v-model="distanceoptions">NationWide (not recommended)
     </div>
    </div>
   <div class="py-4 gutter parent">
      <vue-element-loading :active="show" spinner="bar-fade-scale"/>
-     <div class="row mb-3 justify-content-md-center"  v-if="directorylists">
-        <div v-for="(d, k) in directorylists" :key="k" class="col-12 col-lg-4 col-sm-6 pb-2">
+     <div class="row mb-3 justify-content-md-center"  v-if="lists && lists.length > 0">
+        <div v-for="(d, k) in lists" :key="k" class="col-12 col-lg-4 col-sm-6 pb-2">
            <div class="col pb-4 h-100"> 
              <div class="card  h-100 card-type" v-bind:class="{ 'shadow-sm rounded': shadowclass, 'type-r bg-white': d.type === 'r', 'type-p bg-grey': d.type === 'p' }">
               <div class="card-body m-0">
@@ -38,7 +34,7 @@
             </div>
            </div>
         </div>
-        <div v-if="showpagination" class="pt-3">
+        <div v-if="showpagination" class="row mb-3 justify-content-md-center pt-3">
           <pagination :currentpage="currentPage" :pages="totalpage" @changePage="clickPagination" vspbutton="vspButton" vspbuttonseelcted="vspButton-selected" vspbuttonfast="vspButtonFast"></pagination>
         </div>
         <div v-else>
@@ -67,7 +63,28 @@ export default {
   name: 'ht2-business-directory-component',
   router,
   data () {
-    return { show:false, lists:[], dpin:false, directorylistsnew:[], currentPage:1, totalpage:0 , initialtotal:0, showpagination:false, services:[], servicesp:[], getratings:{}, distanceoptions: 50, showdistancetextcheck:true, showtypetextcheck:true, showalloptions: true }
+    return { 
+      show:false, 
+      neededpotenailnextpage: false,
+      exactitems: 0,
+      loadaccounts: false, 
+      loadpotentials: false,
+      firstloading: false,
+      lists:[], dpin:false, 
+      totalaccountspages: 0,
+      directorylistsnew:[], 
+      currentPage:1,
+      currentPotentialPage: 1,
+      totalpage:0 , 
+      initialtotal:0, 
+      potentialtotal:0, 
+      showpagination:false, 
+      services:[], servicesp:[], 
+      getratings:{}, 
+      distanceoptions: 50, 
+      showdistancetextcheck:true, 
+      showtypetextcheck:true, 
+      showalloptions: true }
   },
   beforeRouteEnter (to, from, next) {
     console.log(from, 'from')
@@ -98,14 +115,14 @@ export default {
       type: String
     },
     lat: {
-      type: String
+      type: Number
     },
     lon: {
-      type: String
+      type: Number
     },
     limit: {
       type: Number,
-      default: 2000
+      default: 6
     },
     itemsperpage: {
       type: Number,
@@ -113,7 +130,7 @@ export default {
     },
     nearby: {
       type: Number,
-      default: 50
+      default: 0
     },
     showlocationdetails: {
       type: Boolean,
@@ -133,78 +150,95 @@ export default {
     }
   },
   serverPrefetch () {
-    return this.fetchItem()
+    return this.fetchItem(true)
   },
   mounted () {
-    if(!this.directorylists) {
-      this.fetchItem()
-    }
-  },
-  computed: {
-     directorylists (d) {
-      var t = this
-      if (this.$store.state.ht2directoryStore.directorystore.data.data.length > 0) {
-        this.initialtotal = this.directorystore().total
-        if(this.lists.length > 0) {
-          var d = (this.currentPage - 1) * this.itemsperpage
-          var n = this.itemsperpage * this.currentPage
-          this.total = this.lists.length
-          this.totalpage = Math.floor(this.lists.length / this.itemsperpage)
-          this.showpagination = true
-          return this.lists.slice(d, n)
-        } else {
-          this.total = this.lists.length
-          this.totalpage = Math.floor(this.directorystore().total / this.itemsperpage)
-          return this.$store.state.ht2directoryStore.directorystore.data.data 
-        } 
-      }
-     }
+    this.fetchItem(true)
   },
   methods: {
     ...mapActions('ht2directoryStore', ['getdirectorystore', 'getdirectorystorepotentials']),
     ...mapGetters('ht2directoryStore', ['directorystore', 'directorystorepotentials']),
     ...mapState('ht2directoryStore', ['getip', 'locationdetails', 'ratings']),
+
     refetchItems() {
        this.show = true
        this.total = 0
-       this.dpin = false
-       this.fetchItem()
+       this.currentPotentialPage = 1
+       this.currentPage = 1
+       this.potentialtotal = 0
+       this.loadaccounts = false
+       this.fetchItem(true)
     },
-    fetchItem() {
+
+    fetchItem(firstload) {
         const parameters = {
           'category_id': this.category,
           'suburb': this.suburb,
           'limit': this.limit,
           'nearby': this.nearby,
           'state': this.state,
+          'page': this.currentPage,
           'type': 'r',
           'lat': this.lat,
           'lon': this.lon,
           'url': '/business/directory/2'
         }
         this.lists = []
+
+        if (firstload) {
+          this.firstloading = true
+        }
+
         return this.getdirectorystore(parameters).then( () => {
+
           var sv = this.directorystore().services_by_business_id
-          this.initialtotal = this.directorystore().total
+          var p = this.directorystore().pluspotentials < 6 ? 6 : this.directorystore().pluspotentials
+          this.potentialtotal = this.directorystore().pluspotentials
+          var stotalpage = (this.directorystore().total + p) / this.limit
+          this.totalpage = Math.floor(stotalpage)
+          var orignumber = this.directorystore().total / this.limit
+          var floorednumber =  Math.floor(orignumber)
+          var extract =  orignumber - Math.floor(orignumber)
+          var remainingitems =  Number(extract) * this.limit
+          this.exactitems = Math.round(remainingitems)
+          this.totalaccountspages = floorednumber
+
           this.show = true
+          this.showpagination = true
+
           if (sv instanceof Object) {
             var st = JSON.parse(JSON.stringify(sv))
-            this.services = st
+            this.services = st  
           }
+
           this.getratings = this.ratings()
-          this.fetchBackground().then( () => {
-            this.dpin = true
+          var cp = this.currentPage;
+
+          setTimeout( () => {
+            this.loadaccounts = true
             this.show = false
-          })
+          }, 200)
+    
         })
     },
-    fetchBackground () {
+
+    fetchPotentialsConjunction (firstload) {
+      
+      if (firstload) {
+        var limit = this.limit - this.exactitems
+        this.currentPotentialPage = 1
+      } else {
+        var limit = this.limit
+        this.currentPotentialPage = (this.currentPage - this.totalaccountspages) - 1
+      }
+
       const parameters = {
         'category_id': this.category,
         'suburb': this.suburb,
-        'limit': this.initialtotal,
+        'limit': (firstload == true ? limit : this.limit),
         'nearby': this.nearby,
         'state': this.state,
+        'page': this.currentPotentialPage,
         'lat': this.lat,
         'lon': this.lon,
         'type': 'p',
@@ -212,14 +246,49 @@ export default {
       }
       return this.getdirectorystorepotentials(parameters)
     },
+
+    fetchPotentials (f) {
+      this.fetchPotentialsConjunction(f).then(() => {
+        if (this.directorystorepotentials().data.length > 0) {
+        var p = this.directorystorepotentials().data
+        p.forEach(v => {
+          this.lists.push(v)
+        })
+        var svp = this.directorystorepotentials().services_by_business_id
+          if (svp instanceof Object) {
+            var stp = JSON.parse(JSON.stringify(svp))
+            this.servicesp = stp
+          }
+        }
+        this.show = false
+      })
+    },
+
     clickPagination (c) {
-      this.show = true
+      this.lists = []
       this.currentPage = c
       this.$router.push({query: {'page': c}})
+      
+      var cp = c - 1;
+
+      if( cp == this.totalaccountspages ) {
+        this.loadaccounts = false
+        this.fetchItem(false).then( () => {
+          this.fetchPotentials(true)
+        })
+      } else if (cp > this.totalaccountspages) {
+        this.fetchPotentials(false)
+      } else {
+        this.loadaccounts = false
+        this.fetchItem()
+      }
+
       setTimeout(() => {
         this.show = false
       }, 200)
+
     }
+
   },
   filters: {
     strippedContent(v) {
@@ -240,20 +309,20 @@ export default {
     }
   },
   watch: {
-    dpin: function(d) {
-      if (this.directorystorepotentials().data.data.length > 0) {
-        this.lists = this.directorystore().data.data
-        var t = this.directorystorepotentials().data.data
-        t.forEach(v => {
-          this.lists.push(v)
-        })
-        var svp = this.directorystorepotentials().services_by_business_id
-        if (svp instanceof Object) {
-          var stp = JSON.parse(JSON.stringify(svp))
-          this.servicesp = stp
+    loadaccounts: function(d) {
+      if(d) {
+        if (this.directorystore().data.data.length > 0) {
+          this.lists = []
+          var t = this.directorystore().data.data
+          t.forEach(v => {
+            this.lists.push(v)
+          })
+          if (t.length < 6 && this.firstloading) {
+            this.fetchPotentials(true)
+          }
         }
       }
-     },
+    },
      total: function (d) {
        return this.directorystore().total
      },
@@ -274,7 +343,7 @@ export default {
        this.state = d 
      },
      distanceoptions: function(d) {
-       if(d === 'nationwide') {
+       if(d === 1) {
          alert('This is not recommended, it takes a while to load all items')
        }
        this.$emit('nearbyemit', d)
