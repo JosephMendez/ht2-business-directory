@@ -4,9 +4,9 @@
 
 ### 1. Install
 ```
-yarn add ht2-business-directory@1.0.3
+yarn add ht2-business-directory@1.0.4
 # or
-npm i ht2-business-directory@1.0.3 --save
+npm i ht2-business-directory@1.0.4 --save
 ```
 
 ### 2. Plug-in
@@ -30,7 +30,7 @@ new Vue({
     :category_id='29' 
     state='WA' 
     suburb='PERTH' 
-    :nearby='50'
+    :nearby='100'
     :itemsperpage='6' 
     headertext='Business Directory - Air Con'
   />
