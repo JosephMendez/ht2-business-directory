@@ -46,7 +46,7 @@ new Vue({
     },
     profileurl: {
       type: String,
-      default: 'https://www.hiretrades.com.au/profile/'
+      default: '/profile/'
     },
     category: {
       type: Number,
@@ -89,12 +89,6 @@ new Vue({
       default: true
     }
 ```
-
-## DEMO URL
-
-```
-http://ht2-dev.hiretrades.com.au/testbusinessdirectory/
-# or
 
 git clone https://github.com/JosephMendez/ht2-business-directory
 
