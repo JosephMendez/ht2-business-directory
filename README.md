@@ -1,4 +1,4 @@
-# Hiretrades Business Directory - Plugin
+# Trades Business Directory - Plugin
 
 ## Installation
 
